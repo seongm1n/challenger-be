@@ -1,12 +1,10 @@
 package academy.challenger.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
+@Table(name = "users")
 @Getter
 public class User {
     @Id
