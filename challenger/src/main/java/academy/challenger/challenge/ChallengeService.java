@@ -16,7 +16,8 @@ public class ChallengeService {
     private final UserRepository userRepository;
 
     public ChallengeResponse save(ChallengeRequest challengeRequest) {
-        User user = userRepository.findById(challengeRequest.userId());
+        User user = userRepository.findById(challengeRequest.userId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 User를 찾을 수 없습니다: " + challengeRequest.userId()));
         LocalDate startDate = LocalDate.now();
         Challenge challenge = new Challenge(
                 user,
@@ -37,7 +38,8 @@ public class ChallengeService {
     }
 
     public List<ChallengeResponse> getAllById(long id) {
-        User user = userRepository.findById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 User를 찾을 수 없습니다: " + id));
         List<Challenge> challenges = challengeRepository.findAllByUser(user);
         return challenges.stream()
                 .map(challenge -> new ChallengeResponse(
