@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("last-challenges")
+@RequestMapping("/last-challenges")
 @AllArgsConstructor
 public class LastChallengeController {
     private final LastChallengeService lastChallengeService;

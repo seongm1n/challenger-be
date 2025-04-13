@@ -17,6 +17,7 @@ public class LastChallengeService {
     private final LastChallengeRepository lastChallengeRepository;
     private final ChallengeRepository challengeRepository;
     private final UserRepository userRepository;
+    private final AIReviewService aiReviewService;
 
     @Transactional
     public LastChallengeResponse save(LastChallengeRequest lastChallengeRequest) {
@@ -25,6 +26,11 @@ public class LastChallengeService {
         Challenge challenge = challengeRepository.findById(lastChallengeRequest.challengeId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 Challenge를 찾을 수 없습니다: " + lastChallengeRequest.challengeId()));
 
+        String review = aiReviewService.getReview(
+                lastChallengeRequest.retrospection(),
+                user.getName()
+        );
+
         LastChallenge lastChallenge = new LastChallenge(
                 user,
                 challenge.getTitle(),
@@ -32,7 +38,7 @@ public class LastChallengeService {
                 challenge.getStartDate(),
                 LocalDate.now(),
                 lastChallengeRequest.retrospection(),
-                "대충 평가하는 내용~"
+                review
         );
 
         lastChallengeRepository.save(lastChallenge);

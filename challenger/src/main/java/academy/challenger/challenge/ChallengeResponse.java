@@ -5,7 +5,7 @@ public record ChallengeResponse (
         long userId,
         String title,
         String description,
-        Integer progress,
+        Double progress,
         Integer duration
 ) {
 }

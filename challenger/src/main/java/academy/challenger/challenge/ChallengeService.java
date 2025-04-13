@@ -32,7 +32,7 @@ public class ChallengeService {
                 challenge.getUser().getId(),
                 challenge.getTitle(),
                 challenge.getDescription(),
-                1,
+                0.0,
                 challenge.getDuration()
         );
     }
@@ -47,7 +47,7 @@ public class ChallengeService {
                         challenge.getUser().getId(),
                         challenge.getTitle(),
                         challenge.getDescription(),
-                        Period.between(challenge.getStartDate(), LocalDate.now()).getDays() + 1,
+                        calculateProgress(challenge.getStartDate(), challenge.getDuration()),
                         challenge.getDuration()
                 ))
                 .toList();
@@ -57,5 +57,11 @@ public class ChallengeService {
         Challenge challenge = challengeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 Challenge를 찾을 수 없습니다: " + id));
         challengeRepository.delete(challenge);
+    }
+
+    private double calculateProgress(LocalDate startDate, int duration) {
+        int elapsedDays = Period.between(startDate, LocalDate.now()).getDays() + 1;
+        double progress = Math.min((double) elapsedDays / duration, 1.0);
+        return Math.round(progress * 100) / 100.0;
     }
 }
