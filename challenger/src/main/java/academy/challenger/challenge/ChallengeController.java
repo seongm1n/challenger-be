@@ -18,6 +18,7 @@ public class ChallengeController {
     @PostMapping
     public ResponseEntity<ChallengeResponse> create(@RequestBody ChallengeRequest challengeRequest) {
         ChallengeResponse challengeResponse = challengeService.save(challengeRequest);
+        log.info("Challenge created: {}", challengeResponse);
         return ResponseEntity.created(URI.create("/challenges/" + challengeResponse.id())).body(challengeResponse);
     }
 
@@ -31,6 +32,7 @@ public class ChallengeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         challengeService.delete(id);
+        log.info("Challenge deleted with ID: {}", id);
         return ResponseEntity.noContent().build();
     }
 }

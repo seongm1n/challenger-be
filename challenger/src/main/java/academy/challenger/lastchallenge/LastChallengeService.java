@@ -48,7 +48,8 @@ public class LastChallengeService {
                 lastChallenge.getUser().getId(),
                 lastChallenge.getTitle(),
                 lastChallenge.getDescription(),
-                lastChallenge.getStartDate() + " - " + lastChallenge.getEndDate(),
+                lastChallenge.getStartDate(),
+                lastChallenge.getEndDate(),
                 lastChallenge.getRetrospection(),
                 lastChallenge.getAssessment()
         );
@@ -64,7 +65,8 @@ public class LastChallengeService {
                         lastChallenge.getUser().getId(),
                         lastChallenge.getTitle(),
                         lastChallenge.getDescription(),
-                        lastChallenge.getStartDate() + " - " + lastChallenge.getEndDate(),
+                        lastChallenge.getStartDate(),
+                        lastChallenge.getEndDate(),
                         lastChallenge.getRetrospection(),
                         lastChallenge.getAssessment()
                 ))
