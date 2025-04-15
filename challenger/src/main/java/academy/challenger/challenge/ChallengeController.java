@@ -16,17 +16,17 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @PostMapping
-    public ResponseEntity<ChallengeResponse> create(@RequestBody ChallengeRequest challengeRequest) {
-        ChallengeResponse challengeResponse = challengeService.save(challengeRequest);
-        log.info("Challenge created: {}", challengeResponse);
-        return ResponseEntity.created(URI.create("/challenges/" + challengeResponse.id())).body(challengeResponse);
+    public ResponseEntity<ChallengeResponse> create(@RequestBody ChallengeRequest request) {
+        ChallengeResponse response = challengeService.save(request);
+        log.info("Challenge created: {}", response);
+        return ResponseEntity.created(URI.create("/challenges/" + response.id())).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<List<ChallengeResponse>> getAllById(@PathVariable long id) {
-        List<ChallengeResponse> challengeResponses = challengeService.getAllById(id);
-        log.info("Retrieved all challenges: {}", challengeResponses);
-        return ResponseEntity.ok().body(challengeResponses);
+        List<ChallengeResponse> responses = challengeService.getAllById(id);
+        log.info("Retrieved all challenges: {}", responses);
+        return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping("/{id}")

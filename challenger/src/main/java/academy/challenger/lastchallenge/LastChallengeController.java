@@ -15,16 +15,16 @@ public class LastChallengeController {
     private final LastChallengeService lastChallengeService;
 
     @PostMapping
-    public ResponseEntity<LastChallengeResponse> create(@RequestBody LastChallengeRequest lastChallengeRequest) {
-        LastChallengeResponse lastChallengeResponse = lastChallengeService.save(lastChallengeRequest);
-        log.info("LastChallenge created: {}", lastChallengeResponse);
-        return ResponseEntity.ok().body(lastChallengeResponse);
+    public ResponseEntity<LastChallengeResponse> create(@RequestBody LastChallengeRequest request) {
+        LastChallengeResponse response = lastChallengeService.save(request);
+        log.info("LastChallenge created: {}", response);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<List<LastChallengeResponse>> getAllById(@PathVariable long id) {
-        List<LastChallengeResponse> lastChallengeResponses = lastChallengeService.getAllById(id);
-        log.info("Retrieved all last challenges: {}", lastChallengeResponses);
-        return ResponseEntity.ok().body(lastChallengeResponses);
+        List<LastChallengeResponse> responses = lastChallengeService.getAllById(id);
+        log.info("Retrieved all last challenges: {}", responses);
+        return ResponseEntity.ok().body(responses);
     }
 }

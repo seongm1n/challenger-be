@@ -15,16 +15,16 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final UserRepository userRepository;
 
-    public ChallengeResponse save(ChallengeRequest challengeRequest) {
-        User user = userRepository.findById(challengeRequest.userId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 User를 찾을 수 없습니다: " + challengeRequest.userId()));
+    public ChallengeResponse save(ChallengeRequest request) {
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 User를 찾을 수 없습니다: " + request.userId()));
         LocalDate startDate = LocalDate.now();
         Challenge challenge = new Challenge(
                 user,
-                challengeRequest.title(),
-                challengeRequest.description(),
+                request.title(),
+                request.description(),
                 startDate,
-                challengeRequest.duration()
+                request.duration()
         );
         challengeRepository.save(challenge);
         return new ChallengeResponse(

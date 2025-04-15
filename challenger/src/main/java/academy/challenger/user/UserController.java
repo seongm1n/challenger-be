@@ -16,10 +16,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> create(@RequestBody UserRequest userRequest) {
-        UserResponse userResponse = userService.save(userRequest);
-        log.info("User created with Name: {}", userRequest.username());
-        log.info("User created with ID: {}", userResponse.id());
-        return ResponseEntity.ok().body(userResponse);
+    public ResponseEntity<UserResponse> create(@RequestBody UserRequest request) {
+        UserResponse response = userService.save(request);
+        log.info("User created with Name: {}", request.username());
+        log.info("User created with ID: {}", response.id());
+        return ResponseEntity.ok().body(response);
     }
 }
