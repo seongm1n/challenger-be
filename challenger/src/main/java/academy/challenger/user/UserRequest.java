@@ -1,4 +1,9 @@
 package academy.challenger.user;
 
-public record UserRequest(String username) {
+import jakarta.validation.constraints.NotBlank;
+
+public record UserRequest(
+        @NotBlank(message = "유저 닉네임이 없습니다.")
+        String username
+) {
 }

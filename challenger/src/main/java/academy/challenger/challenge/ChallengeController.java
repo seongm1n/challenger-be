@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @PostMapping
-    public ResponseEntity<ChallengeResponse> create(@RequestBody ChallengeRequest request) {
+    public ResponseEntity<ChallengeResponse> create(@Valid @RequestBody ChallengeRequest request) {
         ChallengeResponse response = challengeService.save(request);
         log.info("Challenge created: {}", response);
         return ResponseEntity.created(URI.create("/challenges/" + response.id())).body(response);
