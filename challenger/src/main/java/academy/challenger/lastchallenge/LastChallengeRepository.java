@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface LastChallengeRepository extends JpaRepository<LastChallenge, Long> {
-    List<LastChallenge> findAllByUser(User user);
+    List<LastChallenge> findAllByUserOrderByIdDesc(User user);
 }

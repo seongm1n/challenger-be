@@ -1,5 +1,7 @@
 package academy.challenger.challenge;
 
+import academy.challenger.exception.CustomException;
+import academy.challenger.exception.ErrorCode;
 import academy.challenger.user.User;
 import academy.challenger.user.UserRepository;
 import lombok.AllArgsConstructor;
@@ -17,7 +19,7 @@ public class ChallengeService {
 
     public ChallengeResponse save(ChallengeRequest request) {
         User user = userRepository.findById(request.userId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 User를 찾을 수 없습니다: " + request.userId()));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         LocalDate startDate = LocalDate.now();
         Challenge challenge = new Challenge(
                 user,
@@ -39,7 +41,7 @@ public class ChallengeService {
 
     public List<ChallengeResponse> getAllById(long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 User를 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         List<Challenge> challenges = challengeRepository.findAllByUser(user);
         return challenges.stream()
                 .map(challenge -> new ChallengeResponse(
@@ -55,7 +57,7 @@ public class ChallengeService {
 
     public void delete(Long id) {
         Challenge challenge = challengeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 Challenge를 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new CustomException(ErrorCode.CHALLENGE_NOT_FOUND));
         challengeRepository.delete(challenge);
     }
 
