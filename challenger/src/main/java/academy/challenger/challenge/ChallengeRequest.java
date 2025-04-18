@@ -1,9 +1,10 @@
 package academy.challenger.challenge;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ChallengeRequest(
-        @NotBlank(message = "유저 아이디가 없습니다.")
+        @NotNull(message = "유저 아이디가 없습니다.")
         long userId,
         @NotBlank(message = "챌린지 제목이 없습니다.")
         String title,

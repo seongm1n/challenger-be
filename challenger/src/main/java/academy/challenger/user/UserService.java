@@ -13,7 +13,7 @@ public class UserService {
         User user = userRepository.findByName(request.username());
         if (user == null) {
             user = new User(null, request.username());
-            userRepository.save(user);
+            user = userRepository.save(user);
         }
 
         return new UserResponse(user.getId(), user.getName());
