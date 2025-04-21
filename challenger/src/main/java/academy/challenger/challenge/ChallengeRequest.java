@@ -10,7 +10,7 @@ public record ChallengeRequest(
         String title,
         @NotBlank(message = "챌린지 설명이 없습니다.")
         String description,
-        @NotBlank(message = "챌린지 목표 일수가 없습니다.")
+        @NotNull(message = "챌린지 목표 일수가 없습니다.")
         Integer duration
 ) {
 }

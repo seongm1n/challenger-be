@@ -17,7 +17,7 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @PostMapping
-    public ResponseEntity<ChallengeResponse> create(@Valid @RequestBody ChallengeRequest request) {
+    public ResponseEntity<ChallengeResponse> save(@Valid @RequestBody ChallengeRequest request) {
         ChallengeResponse response = challengeService.save(request);
         log.info("Challenge created: {}", response);
         return ResponseEntity.created(URI.create("/challenges/" + response.id())).body(response);

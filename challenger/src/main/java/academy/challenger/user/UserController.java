@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> save(@Valid @RequestBody UserRequest request) {
         UserResponse response = userService.save(request);
         log.info("User created with Name: {}", request.username());
         log.info("User created with ID: {}", response.id());
