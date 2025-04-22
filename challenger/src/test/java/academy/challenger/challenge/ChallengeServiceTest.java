@@ -116,7 +116,6 @@ public class ChallengeServiceTest {
         assertThat(responses.get(0).userId()).isEqualTo(1L);
         assertThat(responses.get(0).title()).isEqualTo("테스트 챌린지");
         assertThat(responses.get(0).description()).isEqualTo("테스트 설명");
-        // progress는 calculateProgress 메소드 결과에 따라 달라지므로 검증 생략
         assertThat(responses.get(0).duration()).isEqualTo(30);
         
         verify(userRepository).findById(1L);

@@ -16,7 +16,7 @@ public class LastChallengeController {
     private final LastChallengeService lastChallengeService;
 
     @PostMapping
-    public ResponseEntity<LastChallengeResponse> create(@Valid @RequestBody LastChallengeRequest request) {
+    public ResponseEntity<LastChallengeResponse> save(@Valid @RequestBody LastChallengeRequest request) {
         LastChallengeResponse response = lastChallengeService.save(request);
         log.info("LastChallenge created: {}", response);
         return ResponseEntity.ok().body(response);
