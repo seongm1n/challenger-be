@@ -7,7 +7,6 @@ import academy.challenger.user.User;
 import academy.challenger.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -46,6 +45,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
             }
         }
 
-        throw new IllegalIdentifierException("Invalid token");
+        throw new CustomException(ErrorCode.INVALID_TOKEN);
     }
 }

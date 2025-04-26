@@ -1,12 +1,18 @@
 package academy.challenger.user;
 
+import academy.challenger.auth.security.JwtTokenProvider;
+import academy.challenger.auth.security.LoginUserArgumentResolver;
+import academy.challenger.config.JwtProperties;
+import academy.challenger.config.WebConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -16,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@Import(UserControllerTest.TestConfig.class)
 public class UserControllerTest {
     
     @TestConfiguration
@@ -30,6 +37,22 @@ public class UserControllerTest {
             };
         }
     }
+
+    // 인증 관련 Mock Bean 추가
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+    
+    @MockBean
+    private UserRepository userRepository;
+    
+    @MockBean
+    private LoginUserArgumentResolver loginUserArgumentResolver;
+    
+    @MockBean
+    private JwtProperties jwtProperties;
+    
+    @MockBean
+    private WebConfig webConfig;
 
     @Autowired
     private MockMvc mockMvc;
