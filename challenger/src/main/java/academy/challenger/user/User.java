@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "users")
@@ -34,8 +35,7 @@ public class User {
         this.password = password;
     }
     
-    public boolean matchPassword(String rawPassword) {
-        // 실제로는 PasswordEncoder를 사용해야 함
-        return this.password.equals(rawPassword);
+    public boolean matchPassword(String rawPassword, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(rawPassword, this.password);
     }
 }

@@ -31,4 +31,4 @@ public class AuthController {
         Long userId = authService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(userId);
     }
-} 
+}
