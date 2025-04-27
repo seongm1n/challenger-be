@@ -2,6 +2,7 @@ package academy.challenger.config;
 
 import academy.challenger.auth.security.JwtAuthenticationFilter;
 import academy.challenger.auth.security.JwtTokenProvider;
+import academy.challenger.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,7 +34,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), 
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userRepository), 
                             UsernamePasswordAuthenticationFilter.class);
         
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));

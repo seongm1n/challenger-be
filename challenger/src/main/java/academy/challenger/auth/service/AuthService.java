@@ -8,9 +8,6 @@ import academy.challenger.exception.ErrorCode;
 import academy.challenger.user.User;
 import academy.challenger.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,22 +19,17 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     
     @Transactional
     public String login(LoginRequest loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
-            );
-            
-            User user = userRepository.findByEmail(loginRequest.email())
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-                    
-            return jwtTokenProvider.generateToken(user.getId());
-        } catch (Exception e) {
+        User user = userRepository.findByEmail(loginRequest.email())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         }
+        
+        return jwtTokenProvider.generateToken(user.getId());
     }
     
     @Transactional

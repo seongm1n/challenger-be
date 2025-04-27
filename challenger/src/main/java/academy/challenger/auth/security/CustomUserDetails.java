@@ -12,9 +12,13 @@ import java.util.Collections;
 public class CustomUserDetails implements UserDetails {
 
     private final Long userId;
+    private final String password;
+    private final String email;
 
-    public CustomUserDetails(Long userId) {
+    public CustomUserDetails(Long userId, String email, String password) {
         this.userId = userId;
+        this.email = email;
+        this.password = password;
     }
 
     @Override
@@ -24,12 +28,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return userId.toString();
+        return email;
     }
 
     @Override
