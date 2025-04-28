@@ -1,60 +1,43 @@
 package academy.challenger.lastchallenge;
 
+import academy.challenger.auth.WithMockCustomUser;
 import academy.challenger.auth.security.JwtTokenProvider;
 import academy.challenger.auth.security.LoginUserArgumentResolver;
 import academy.challenger.config.JwtProperties;
+import academy.challenger.config.TestSecurityConfig;
 import academy.challenger.config.WebConfig;
-import academy.challenger.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LastChallengeController.class)
-@Import(LastChallengeControllerTest.TestConfig.class)
+@Import(TestSecurityConfig.class)
 public class LastChallengeControllerTest {
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public LastChallengeService lastChallengeService() {
-            return new LastChallengeService(null, null, null, null) {
-                @Override
-                public LastChallengeResponse save(LastChallengeRequest request) {
-                    return new LastChallengeResponse(1L, 1L, "테스트 챌린지", "테스트 설명", LocalDate.of(2025, 4, 10), LocalDate.of(2025, 4, 15), "테스트 회고", "테스트 응원");
-                }
+    @MockBean
+    private LastChallengeService lastChallengeService;
 
-                @Override
-                public List<LastChallengeResponse> getAllById(long id) {
-                    return List.of(
-                        new LastChallengeResponse(1L, 1L, "테스트 챌린지", "테스트 설명", LocalDate.of(2025, 4, 10), LocalDate.of(2025, 4, 15), "테스트 회고", "테스트 응원")
-                    );
-                }
-            };
-        }
-    }
-    
-    // 인증 관련 Mock Bean 추가
+    // 보안 관련 Mock Bean
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
-    
-    @MockBean
-    private UserRepository userRepository;
     
     @MockBean
     private LoginUserArgumentResolver loginUserArgumentResolver;
@@ -78,9 +61,13 @@ public class LastChallengeControllerTest {
     void setUp() {
         lastChallengeRequest = new LastChallengeRequest(1L, 1L, "테스트 회고");
         lastChallengeResponse = new LastChallengeResponse(1L, 1L, "테스트 챌린지", "테스트 설명", LocalDate.of(2025, 4, 10), LocalDate.of(2025, 4, 15), "테스트 회고", "테스트 응원");
+        
+        given(lastChallengeService.save(any(LastChallengeRequest.class))).willReturn(lastChallengeResponse);
+        given(lastChallengeService.getAllById(anyLong())).willReturn(List.of(lastChallengeResponse));
     }
 
     @Test
+    @WithMockUser
     void 지난_챌린지_생성_성공() throws Exception {
         // when & then
         mockMvc.perform(post("/last-challenges")
@@ -99,6 +86,7 @@ public class LastChallengeControllerTest {
     }
 
     @Test
+    @WithMockUser
     void 지난_챌린지_조회_성공() throws Exception {
         // when & then
         mockMvc.perform(get("/last-challenges/1"))

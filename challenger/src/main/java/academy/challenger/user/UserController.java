@@ -1,5 +1,6 @@
 package academy.challenger.user;
 
+import academy.challenger.auth.security.LoginUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> save(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> save(@Valid @RequestBody UserRequest request, @LoginUser User user) {
         UserResponse response = userService.save(request);
+        log.info("User: {}", user.getName());
         log.info("User created with Name: {}", request.username());
         log.info("User created with ID: {}", response.id());
         return ResponseEntity.ok().body(response);

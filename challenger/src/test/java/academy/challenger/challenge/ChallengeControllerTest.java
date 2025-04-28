@@ -1,66 +1,44 @@
 package academy.challenger.challenge;
 
+import academy.challenger.auth.WithMockCustomUser;
 import academy.challenger.auth.security.JwtTokenProvider;
-import academy.challenger.auth.security.LoginUser;
 import academy.challenger.auth.security.LoginUserArgumentResolver;
 import academy.challenger.config.JwtProperties;
+import academy.challenger.config.TestSecurityConfig;
 import academy.challenger.config.WebConfig;
 import academy.challenger.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ChallengeController.class)
-@Import(ChallengeControllerTest.TestConfig.class)
+@Import(TestSecurityConfig.class)
 public class ChallengeControllerTest {
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public ChallengeService challengeService() {
-            return new ChallengeService(null, null) {
-                @Override
-                public ChallengeResponse save(ChallengeRequest request) {
-                    return new ChallengeResponse(1L, 1L, "테스트 챌린지", "테스트 설명", 0.0, 30);
-                }
-                
-                @Override
-                public List<ChallengeResponse> getAllById(long id) {
-                    return List.of(
-                        new ChallengeResponse(1L, 1L, "테스트 챌린지", "테스트 설명", 0.0, 30)
-                    );
-                }
-                
-                @Override
-                public void delete(Long id) {
-                    // 테스트에서는 별도 구현 필요 없음
-                }
-            };
-        }
-    }
-    
-    // 인증 관련 Mock Bean 추가
+    @MockBean
+    private ChallengeService challengeService;
+
+    // 보안 관련 Mock Bean
     @MockBean
     private JwtTokenProvider jwtTokenProvider;
-    
-    @MockBean
-    private UserRepository userRepository;
     
     @MockBean
     private LoginUserArgumentResolver loginUserArgumentResolver;
@@ -84,9 +62,14 @@ public class ChallengeControllerTest {
     void setUp() {
         challengeRequest = new ChallengeRequest(1L, "테스트 챌린지", "테스트 설명", 30);
         challengeResponse = new ChallengeResponse(1L, 1L, "테스트 챌린지", "테스트 설명", 0.0, 30);
+        
+        given(challengeService.save(any(ChallengeRequest.class))).willReturn(challengeResponse);
+        given(challengeService.getAllById(anyLong())).willReturn(List.of(challengeResponse));
+        doNothing().when(challengeService).delete(anyLong());
     }
     
     @Test
+    @WithMockUser
     void 챌린지_생성_성공() throws Exception {
         // when & then
         mockMvc.perform(post("/challenges")
@@ -103,6 +86,7 @@ public class ChallengeControllerTest {
     }
     
     @Test
+    @WithMockUser
     void 챌린지_조회_성공() throws Exception {
         // when & then
         mockMvc.perform(get("/challenges/1"))
@@ -117,6 +101,7 @@ public class ChallengeControllerTest {
     }
     
     @Test
+    @WithMockUser
     void 챌린지_삭제_성공() throws Exception {
         // when & then
         mockMvc.perform(delete("/challenges/1"))
@@ -125,6 +110,7 @@ public class ChallengeControllerTest {
     }
     
     @Test
+    @WithMockUser
     void 챌린지_생성_실패_제목누락() throws Exception {
         // given
         ChallengeRequest invalidRequest = new ChallengeRequest(1L, "", "테스트 설명", 30);
@@ -138,6 +124,7 @@ public class ChallengeControllerTest {
     }
     
     @Test
+    @WithMockUser
     void 챌린지_생성_실패_설명누락() throws Exception {
         // given
         ChallengeRequest invalidRequest = new ChallengeRequest(1L, "테스트 챌린지", "", 30);
@@ -151,6 +138,7 @@ public class ChallengeControllerTest {
     }
     
     @Test
+    @WithMockUser
     void 챌린지_생성_실패_기간누락() throws Exception {
         // given
         String requestJson = "{\"userId\":1,\"title\":\"테스트 챌린지\",\"description\":\"테스트 설명\",\"duration\":null}";
