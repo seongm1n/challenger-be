@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: challenger-app
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-challenger}
+      - MYSQL_USER=${MYSQL_USER:-challenger_user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-challenger_password}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME:-86400000}
+    networks:
+      - challenger-network
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: challenger-mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-challenger}
+      - MYSQL_USER=${MYSQL_USER:-challenger_user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-challenger_password}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - challenger-network
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+networks:
+  challenger-network:
+    driver: bridge
+
+volumes:
+  mysql-data: 
