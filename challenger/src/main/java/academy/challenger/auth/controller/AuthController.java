@@ -2,7 +2,10 @@ package academy.challenger.auth.controller;
 
 import academy.challenger.auth.dto.LoginRequest;
 import academy.challenger.auth.dto.RegisterRequest;
+import academy.challenger.auth.dto.TokenRefreshRequest;
 import academy.challenger.auth.dto.TokenResponse;
+import academy.challenger.auth.security.CustomUserDetails;
+import academy.challenger.auth.security.LoginUser;
 import academy.challenger.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +25,20 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        String token = authService.login(loginRequest);
-        return ResponseEntity.ok(new TokenResponse(token));
+        TokenResponse tokenResponse = authService.login(loginRequest);
+        return ResponseEntity.ok(tokenResponse);
+    }
+    
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refreshToken(@RequestBody @Valid TokenRefreshRequest request) {
+        TokenResponse tokenResponse = authService.refreshToken(request.refreshToken());
+        return ResponseEntity.ok(tokenResponse);
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@LoginUser CustomUserDetails userDetails) {
+        authService.logout(userDetails.getId());
+        return ResponseEntity.noContent().build();
     }
     
     @PostMapping("/register")

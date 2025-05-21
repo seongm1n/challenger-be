@@ -7,11 +7,12 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "jwt")
 @Component
+@ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
-    private String secretKey = "your_very_secure_secret_key_should_be_long_enough_for_security";
-    private long expirationTime = 3600;
-    private String tokenPrefix = "Bearer ";
-    private String headerString = "Authorization";
+    private String secretKey;
+    private long expirationTime;
+    private long refreshExpiration;
+    private String tokenPrefix;
+    private String headerString;
 }

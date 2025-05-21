@@ -20,6 +20,10 @@ public class CustomUserDetails implements UserDetails {
         this.email = email;
         this.password = password;
     }
+    
+    public Long getId() {
+        return userId;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
